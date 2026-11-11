@@ -126,7 +126,91 @@ python "<skill>/scripts/bom_check.py" --bom bom.csv
 - **BOM 格式**：CSV  UTF-8 编码，无 BOM 头
 - **DRC 规则**：根据板厂能力设置，不要盲目追求最小线宽
 
+## PDN 电源完整性分析
+
+### 使用 PDN 仿真脚本
+
+```bash
+python "<skill>/scripts/pdn_analysis.py" \
+  --voltage 0.85 \
+  --current 12 \
+  --delta-v 2 \
+  --inductance 5e-12 \
+  --output pdn_results.json \
+  --plot pdn_plot.png
+```
+
+### 参数说明
+
+| 参数 | 说明 | 典型值 |
+|------|------|--------|
+| `--voltage` | 电源电压 (V) | 0.85, 1.2, 1.8, 3.3 |
+| `--current` | 负载电流 (A) | 根据芯片 datasheet |
+| `--delta-v` | 允许纹波 (%) | 1-5% |
+| `--inductance` | 平面电感 (H) | 1-10 pH/sq |
+| `--capacitors` | 电容网络 (JSON) | 见下方示例 |
+
+### 电容网络示例
+
+```json
+[
+  {"C": 10e-6, "ESR": 0.02, "ESL": 3e-9, "count": 10},
+  {"C": 0.1e-6, "ESR": 0.05, "ESL": 1e-9, "count": 20},
+  {"C": 0.01e-6, "ESR": 0.1, "ESL": 0.3e-9, "count": 40}
+]
+```
+
+### 结果判据
+
+- **Z_target** = V × (ΔV%/100) / I
+- **通过**：90% 频段阻抗低于 Z_target
+- **失败**：需要增加去耦电容或减小平面电感
+
+## 信号完整性 (SI) 检查
+
+完整 SI 检查清单见 `references/si-checklist.md`，包括：
+
+- [ ] 阻抗控制（微带/带状线计算）
+- [ ] 时钟设计规则
+- [ ] 差分对等长
+- [ ] DDR 内存布线
+- [ ] 串扰控制
+- [ ] 端接策略
+- [ ] 过孔处理
+
+## KiCad 自动化
+
+### 原理图生成
+
+```bash
+python "<skill>/scripts/generate_schematic.py" \
+  --bom components.csv \
+  --title "My Design" \
+  --rev A \
+  --output design.kicad_sch
+```
+
+### PCB 布局生成
+
+```bash
+python "<skill>/scripts/generate_pcb.py" \
+  --sch design.kicad_sch \
+  --lib footprints.lib \
+  --layers 4 \
+  --board-size 100,80 \
+  --output design.kicad_pcb
+```
+
+### Gerber 验证
+
+```bash
+python "<skill>/scripts/gerber_verify.py" \
+  --gerber-dir ./gerber \
+  --output gerber_report.txt
+```
+
 ## 参考
 
+- `references/si-checklist.md` — 信号完整性完整检查清单
 - `references/design-checklist.md` — 完整设计检查清单
 - `references/gerber-checklist.md` — Gerber 导出检查项
