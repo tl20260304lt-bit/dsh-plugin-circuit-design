@@ -1,0 +1,4 @@
+# dsh-plugin-circuit-design — bundle patch: insert the bundled skill provider row.
+- insert:
+    - id: skill-circuit-design
+      name: 'dsh-plugin-circuit-design'

@@ -1,0 +1,62 @@
+{
+  "name": "dsh-plugin-circuit-design",
+  "version": "0.1.0",
+  "description": "Circuit design checklist and templates for DeepSeek Harness: schematic review, PCB layout checks, BOM validation, and PDN analysis starter.",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "skill",
+    "circuit",
+    "PCB",
+    "schematic",
+    "KiCad",
+    "hardware"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "TaoLiu",
+    "email": "taoliu@ntsc.ac.cn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tl20260304lt-bit/dsh-plugin-circuit-design.git"
+  },
+  "homepage": "https://github.com/tl20260304lt-bit/dsh-plugin-circuit-design#readme",
+  "bugs": {
+    "url": "https://github.com/tl20260304lt-bit/dsh-plugin-circuit-design/issues"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
